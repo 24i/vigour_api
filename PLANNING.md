@@ -1,6 +1,6 @@
 # API
 
-## Base API Class
+### Base API Class
 
 ###### properties
 
