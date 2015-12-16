@@ -25,9 +25,9 @@ Allow users to log in to a third party API
 
 ```
 // using username and password
-login.set({username: 'yo', password: 'yo'})
+auth.login.set({username: 'yo', password: 'yo'})
 // using facebook
-login.facebook.val = true
+auth.login.facebook.val = true
 ```
 
 #### verify
@@ -40,7 +40,7 @@ Allow token verification to check if request is authenticated
 ###### usage
 
 ```
-verify.set({token: 'yo'})
+auth.verify.set({token: 'yo'})
 ```
 
 #### register
@@ -56,10 +56,49 @@ Allow users to sign up using a third party API
 ###### usage
 
 ```
-register.set({username: 'yo', password: 'yo', email: 'yo@yo.yo', userData: {
+auth.register.set({username: 'yo', password: 'yo', email: 'yo@yo.yo', userData: {
   gender: 'yo',
   age: 'yo'
 }})
+```
+
+#### resetPassword
+Allow users to reset their password providing a new one
+
+###### properties
+
+* `new`
+
+###### usage
+
+```
+auth.resetPassword.set({new: 'yo'})
+```
+
+#### sendPassword
+Allow users to reset their password providing a new one
+
+###### properties
+
+* `email`
+
+###### usage
+
+```
+auth.sendPassword.set({email: 'yo@yo.yo'})
+```
+
+#### userData
+Retrieves used data for an authenticated user
+
+###### properties
+
+* `authToken`
+
+###### usage
+
+```
+auth.userData.set({authToken: 'yo'})
 ```
 
 ### TODO
