@@ -10,6 +10,18 @@
   * Accept: application/json
   * Content-Type: application/json
 
+###### emits
+
+* `error(err)`, emitted on internal error
+  * **err** *Object*
+    * `path`, specify the error location eg: auth.login
+    * `message`, error message, eg: 'Wrong credentials'
+* `response(res)`, emitted when API call ends.
+  * **res** *Object*
+    * `data`, response body
+    * `code`, http status code
+    * `headers`, http response headers
+
 ### Auth APIs
 
 #### login

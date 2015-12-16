@@ -1,0 +1,19 @@
+{
+  "name": "vigour-api",
+  "version": "0.0.1",
+  "description": "Vigour generic API tool",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "gaston test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vigour-io/api.git"
+  },
+  "author": "Vigour",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vigour-io/api/issues"
+  },
+  "homepage": "https://github.com/vigour-io/api#readme"
+}
