@@ -10,18 +10,6 @@
   * Accept: application/json
   * Content-Type: application/json
 
-###### emits
-
-* `error(err)`, emitted on internal error
-  * **err** *Object*
-    * `path`, specify the error location eg: auth.login
-    * `message`, error message, eg: 'Wrong credentials'
-* `response(res)`, emitted when API call ends.
-  * **res** *Object*
-    * `data`, response body
-    * `code`, http status code
-    * `headers`, http response headers
-
 ### Auth APIs
 
 #### login
@@ -36,6 +24,10 @@ Allow users to log in to a third party API
 ###### usage
 
 ```
+// listening for response
+auth.login.on('data', function (token) {
+  console.log(token)
+})
 // using username and password
 auth.login.set({username: 'yo', password: 'yo'})
 // using facebook
@@ -52,6 +44,11 @@ Allow token verification to check if request is authenticated
 ###### usage
 
 ```
+// listen for data
+auth.verify.on('data', (data) => {
+  // data === true --> token valid
+})
+// verify the given token
 auth.verify.set({token: 'yo'})
 ```
 
@@ -68,10 +65,15 @@ Allow users to sign up using a third party API
 ###### usage
 
 ```
-auth.register.set({username: 'yo', password: 'yo', email: 'yo@yo.yo', userData: {
-  gender: 'yo',
-  age: 'yo'
-}})
+auth.register.set({
+  username: 'yo',
+  password: 'yo',
+  email: 'yo@yo.yo',
+  userData: {
+    gender: 'yo',
+    age: 'yo'
+  }
+})
 ```
 
 #### resetPassword
