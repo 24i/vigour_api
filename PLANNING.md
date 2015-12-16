@@ -2,7 +2,7 @@
 
 ## Base API Class
 
-#### `properties`
+###### properties
 
 * `url`, endpoint location, must contain protocol too
 * `method`, specify the HTTP method used in AJAX calls
