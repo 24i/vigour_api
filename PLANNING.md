@@ -40,7 +40,6 @@ Allow token verification to check if request is authenticated
 ###### usage
 
 ```
-// using username and password
 verify.set({token: 'yo'})
 ```
 
@@ -57,7 +56,6 @@ Allow users to sign up using a third party API
 ###### usage
 
 ```
-// using username and password
 register.set({username: 'yo', password: 'yo', email: 'yo@yo.yo', userData: {
   gender: 'yo',
   age: 'yo'
