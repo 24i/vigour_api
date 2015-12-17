@@ -18,12 +18,24 @@
   },
   "homepage": "https://github.com/vigour-io/api#readme",
   "dependencies": {
+    "hyperquest": "^1.2.0",
+    "vigour-facebook": "^1.0.7",
     "vigour-js": "~0.3.8"
   },
   "devDependencies": {
     "colors-browserify": "0.0.8",
     "gaston": "^0.29.3",
     "husky": "^0.10.2"
+  },
+  "vigour": {
+    "facebook": {
+      "appId": "1534460276875190",
+      "scope": "public_profile,email",
+      "web": {
+        "version": "v2.5",
+        "src": "//connect.facebook.net/en_NL/sdk.js"
+      }
+    }
   },
   "standard": {
     "globals": [

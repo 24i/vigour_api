@@ -1,14 +1,18 @@
 # API
 
 ### Base API Class
+This class will be used to create all the other APIs implementations.
 
 ###### properties
 
-* `url`, endpoint location, must contain protocol too
+* `url`, endpoint location, must contain protocol
 * `method`, specify the HTTP method used in AJAX calls
 * `headers`, list of headers to add in API calls, by default this is the list of headers sent:
   * Accept: application/json
   * Content-Type: application/json
+* `encodeJson`, if true result will be parsed in JSON
+* `body`, if httpMethod is `POST` or `PUT` it will be passed as request body
+* `query`, must contain a valid query string as String or a JSON which will be used as query string in the URL
 
 ### Auth APIs
 
