@@ -4,7 +4,8 @@
   "description": "Vigour generic API tool",
   "main": "lib/index.js",
   "scripts": {
-    "test": "gaston test"
+    "test": "gaston test",
+    "precommit": "./node_modules/.bin/standard lib/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,26 @@
   "bugs": {
     "url": "https://github.com/vigour-io/api/issues"
   },
-  "homepage": "https://github.com/vigour-io/api#readme"
+  "homepage": "https://github.com/vigour-io/api#readme",
+  "dependencies": {
+    "vigour-js": "~0.3.8"
+  },
+  "devDependencies": {
+    "colors-browserify": "0.0.8",
+    "gaston": "^0.29.3",
+    "husky": "^0.10.2"
+  },
+  "standard": {
+    "globals": [
+      "alert",
+      "describe",
+      "it",
+      "expect",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach",
+      "sinon"
+    ]
+  }
 }
