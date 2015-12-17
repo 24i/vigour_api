@@ -37,6 +37,9 @@
       }
     }
   },
+  "gaston": {
+    "package": true
+  },
   "standard": {
     "globals": [
       "alert",
