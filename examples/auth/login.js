@@ -5,22 +5,41 @@ auth.login.on('error', (err) => {
   console.log('login', 'on.error', err)
 })
 
-// login request, setup can be splitted by config properties and body
+// useful for spinners, need check
+auth.login.loading.on((isWorking) => {
+  console.log('login', 'loading.on.data', isWorking)
+  if (isWorking) console.log('login', 'loading.on.', 'Login started')
+  else console.log('login', 'loading.on.', 'Login finished')
+})
+
+// adding custom response handler
+auth.login.on('response', (data) => {
+  console.log('login', 'on.response', data)
+  var token = typeof data === 'string' ? data : data.token
+  auth.token.origin.set(token)
+})
+
+// adding custom validation
+auth.login.body.on(function (data) {
+  console.log('data', data)
+  this.parent.login()
+  // if (data.username && data.password) this.parent.login()
+  // else this.parent.emit('error', 'Body is not valid')
+})
+
+// login request config
 auth.login.set({
   url: 'http://demo2052708.mockable.io/login',
   httpMethod: 'post',
   headers: {
     'yo-header-title': 'yo-header-value'
-  },
-  username: 'xxx',
-  password: 'xxx'
+  }
 })
 
-// response handler for specific implementations
-auth.login.on('response', (data) => {
-  console.log('login', 'on.response', data)
-  var token = typeof data === 'string' ? data : data.token
-  auth.token.origin.set(token)
+// login
+auth.login.login({
+  username: 'xxx',
+  password: 'xxx'
 })
 
 // auth has token property
@@ -28,19 +47,7 @@ auth.token.on((data) => {
   console.log('login', 'token.on.data', data)
 })
 
-// useful for spinners, need check
-// Q: Why doesn't fire?
-auth.login.working.on('value', function (val) {
-  console.log('login', 'working.on.value', val)
-})
-// Q: Why doesn't fire?
-auth.login.working.on((isWorking) => {
-  console.log('login', 'working.on.data', isWorking)
-  if (isWorking) console.log('login', 'working.on.', 'Login started')
-  else console.log('login', 'working.on.', 'Login finished')
-})
-
 // facebook
-setTimeout(() => {
-  auth.login.facebook.val = true
-}, 1000)
+// setTimeout(() => {
+//   auth.login.facebook.val = true
+// }, 1000)
