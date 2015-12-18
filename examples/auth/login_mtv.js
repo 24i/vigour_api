@@ -12,7 +12,7 @@ auth.login.loading.on((isWorking) => {
   else console.log('login', 'loading.on.', 'Login finished')
 })
 
-// login request, setup can be splitted by config properties and body
+// login request setup
 auth.login.set({
   url: 'https://utt.mtvnn.com/api/v2/sessions.json',
   httpMethod: 'post',

@@ -19,14 +19,6 @@ auth.login.on('response', (data) => {
   auth.token.origin.set(token)
 })
 
-// adding custom validation
-auth.login.body.on(function (data) {
-  console.log('data', data)
-  this.parent.login()
-  // if (data.username && data.password) this.parent.login()
-  // else this.parent.emit('error', 'Body is not valid')
-})
-
 // login request config
 auth.login.set({
   url: 'http://demo2052708.mockable.io/login',
@@ -47,7 +39,7 @@ auth.token.on((data) => {
   console.log('login', 'token.on.data', data)
 })
 
-// facebook
-// setTimeout(() => {
-//   auth.login.facebook.val = true
-// }, 1000)
+facebook
+setTimeout(() => {
+  auth.login.facebook.val = true
+}, 1000)
