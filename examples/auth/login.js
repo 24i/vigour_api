@@ -39,7 +39,10 @@ auth.token.on((data) => {
   console.log('login', 'token.on.data', data)
 })
 
-// facebook
-setTimeout(() => {
-  auth.login.facebook.val = true
-}, 1000)
+var isNode = require('vigour-js/lib/util/is/node')
+if (!isNode) {
+  // facebook
+  setTimeout(() => {
+    auth.login.facebook.val = true
+  }, 1000)
+}
