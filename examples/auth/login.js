@@ -43,7 +43,4 @@ auth.login.working.on((isWorking) => {
 // facebook
 setTimeout(() => {
   auth.login.facebook.val = true
-  auth.login.facebook.on('response', function () {
-    console.log('facebook response')
-  })
 }, 1000)
