@@ -1,0 +1,32 @@
+{
+  "name": "vigour-api-base-examples",
+  "version": "0.0.1",
+  "description": "Examples for base functionalities of vigour-api",
+  "main": "index.js",
+  "author": "Vigour",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vigour-io/api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vigour-io/api/issues"
+  },
+  "homepage": "https://github.com/vigour-io/api#readme",
+  "dependencies": {
+    "vigour-api": "../../../"
+  },
+  "standard": {
+    "globals": [
+      "alert",
+      "describe",
+      "it",
+      "expect",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach",
+      "sinon"
+    ]
+  }
+}
