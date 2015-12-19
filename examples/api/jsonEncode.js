@@ -15,7 +15,23 @@ var stringResponse = new Api({
 })
 
 stringResponse.on('response', (data) => {
-  console.log('QUERY', 'on.response', 'data', data)
+  console.log('ENCODE', 'on.response', 'data', data)
 })
 
 stringResponse.request()
+
+// passing query strings as json
+var errorForEncoding = new Api({
+  url: 'https://demo2052708.mockable.io/stringResponse',
+  httpMethos: 'get',
+  encodeJson: true,
+  headers: {
+    'Accept': 'text/plain'
+  }
+})
+
+errorForEncoding.on('error', (err) => {
+  console.log('ENCODE', 'on.error', 'err', err)
+})
+
+errorForEncoding.request()
