@@ -1,0 +1,51 @@
+{
+  "name": "vigour-api-auth-examples",
+  "version": "0.0.1",
+  "description": "Examples for AUTH module of vigour-api",
+  "main": "index.js",
+  "author": "Vigour",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vigour-io/api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vigour-io/api/issues"
+  },
+  "homepage": "https://github.com/vigour-io/api#readme",
+  "dependencies": {
+    "vigour-api": "../"
+  },
+  "vigour": {
+    "api": {
+      "login": {
+        "url": "http://demo2052708.mockable.io/login",
+        "httpMethod": "post"
+      }
+    },
+    "facebook": {
+      "appId": "1537790836542134",
+      "scope": "public_profile,email",
+      "web": {
+        "version": "v2.5",
+        "src": "//connect.facebook.net/en_NL/sdk.js"
+      }
+    }
+  },
+  "gaston": {
+    "package": true
+  },
+  "standard": {
+    "globals": [
+      "alert",
+      "describe",
+      "it",
+      "expect",
+      "before",
+      "after",
+      "beforeEach",
+      "afterEach",
+      "sinon"
+    ]
+  }
+}
