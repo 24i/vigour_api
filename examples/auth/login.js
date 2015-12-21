@@ -1,4 +1,4 @@
-var auth = require('../../lib/auth')
+var auth = require('vigour-api').auth
 
 // login errors
 auth.login.on('error', (err) => {
@@ -24,12 +24,13 @@ auth.login.set({
   url: 'http://demo2052708.mockable.io/login',
   httpMethod: 'post',
   headers: {
+    'Content-Type': 'application/json',
     'yo-header-title': 'yo-header-value'
   }
 })
 
 // login
-auth.login.login({
+auth.login.execute({
   username: 'xxx',
   password: 'xxx'
 })
