@@ -4,7 +4,7 @@
 // demo used also for development
 var Api = require('vigour-api').api
 
-// passing query strings as json
+// not encoding and no error
 var stringResponse = new Api({
   url: 'https://demo2052708.mockable.io/stringResponse',
   httpMethos: 'get',
@@ -20,7 +20,7 @@ stringResponse.on('response', (data) => {
 
 stringResponse.request()
 
-// passing query strings as json
+// encoding and throwing error
 var errorForEncoding = new Api({
   url: 'https://demo2052708.mockable.io/stringResponse',
   httpMethos: 'get',
