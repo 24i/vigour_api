@@ -19,6 +19,7 @@
   "homepage": "https://github.com/vigour-io/api#readme",
   "dependencies": {
     "hyperquest": "^1.2.0",
+    "vigour-env": "^1.0.12",
     "vigour-facebook": "^1.0.7",
     "vigour-js": "~0.3.8"
   },
