@@ -47,3 +47,5 @@ weather.working.on('data', (isWorking) => {
 // executes the request
 weather.request()
 ```
+
+For more examples take a look at the [examples](examples) folder.
