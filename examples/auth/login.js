@@ -15,8 +15,6 @@ auth.login.loading.on((isWorking) => {
 // adding custom response handler
 auth.login.on('response', (data) => {
   console.log('login', 'on.response', data)
-  var token = typeof data === 'string' ? data : data.token
-  auth.token.origin.set(token)
 })
 
 // login request config
@@ -33,11 +31,6 @@ auth.login.set({
 auth.login.execute({
   username: 'xxx',
   password: 'xxx'
-})
-
-// auth has token property
-auth.token.on((data) => {
-  console.log('login', 'token.on.data', data)
 })
 
 var isNode = require('vigour-js/lib/util/is/node')

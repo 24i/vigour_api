@@ -17,12 +17,6 @@
     "vigour-api": "../"
   },
   "vigour": {
-    "api": {
-      "login": {
-        "url": "http://demo2052708.mockable.io/login",
-        "httpMethod": "post"
-      }
-    },
     "facebook": {
       "appId": "1537790836542134",
       "scope": "public_profile,email",
