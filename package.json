@@ -21,7 +21,7 @@
     "hyperquest": "^1.2.0",
     "vigour-env": "^1.0.12",
     "vigour-facebook": "^1.0.7",
-    "vigour-js": "~0.3.8"
+    "vigour-js": "^0.3.8"
   },
   "devDependencies": {
     "colors-browserify": "0.0.8",
