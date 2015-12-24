@@ -40,7 +40,7 @@ weather.on('error', (err) => {
 })
 
 // useful if you want to implement spinners, data is `false` or `true`
-weather.working.on('data', (isWorking) => {
+weather.loading.on('data', (isWorking) => {
   console.log('Api is working', isWorking)
 })
 
