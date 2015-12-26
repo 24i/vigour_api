@@ -2,7 +2,7 @@
 // -- DEMO CODE
 // Showing some basic API functionalities
 // demo used also for development
-var Api = require('vigour-api').api
+var Api = require('../')
 
 // not encoding and no error
 var stringResponse = new Api({

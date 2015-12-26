@@ -4,7 +4,7 @@ An utility to perform API calls in Vigour style.
 ## Install
 Since is not yet published on [npm](www.npmjs.org) you can add it to your dependencies with the line: `vigour-io/api` and npm will take care to download it (if you have the permissions to access the repository in GitHub)
 
-## Basic usage
+## Example
 
 ```js
 var Api = require('vigour-api')
@@ -47,5 +47,18 @@ weather.loading.on('data', (isWorking) => {
 // executes the request
 weather.request()
 ```
+
+## Configuration
+
+```js
+var Api = require('vigour-api')
+
+// JSON parse response
+api.set({jsonEncode: true})
+
+// HTTP Method
+api.set({httpMethod: 'post'})
+
+
 
 For more examples take a look at the [examples](examples) folder.

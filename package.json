@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/vigour-io/api.git"
   },
-  "author": "Vigour",
+  "author": "Vigour.io <dev@vigour.io>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vigour-io/api/issues"
@@ -19,27 +19,10 @@
   "homepage": "https://github.com/vigour-io/api#readme",
   "dependencies": {
     "hyperquest": "^1.2.0",
-    "vigour-env": "^1.0.12",
-    "vigour-facebook": "^1.0.7",
     "vigour-js": "^0.3.8"
   },
   "devDependencies": {
-    "colors-browserify": "0.0.8",
-    "gaston": "^0.29.3",
     "husky": "^0.10.2"
-  },
-  "vigour": {
-    "facebook": {
-      "appId": "1537790836542134",
-      "scope": "public_profile,email",
-      "web": {
-        "version": "v2.5",
-        "src": "//connect.facebook.net/en_NL/sdk.js"
-      }
-    }
-  },
-  "gaston": {
-    "package": true
   },
   "standard": {
     "globals": [
