@@ -48,17 +48,94 @@ weather.loading.on('data', (isWorking) => {
 weather.request()
 ```
 
-## Configuration
+## Docs by examples
 
 ```js
+// Require and create instance
 var Api = require('vigour-api')
+var api = new Api()
 
+// Configure the API call: all at once, one by one or inject a config
 // JSON parse response
-api.set({jsonEncode: true})
-
+api.set({jsonEncode: true})s
 // HTTP Method
 api.set({httpMethod: 'post'})
+// URL
+api.set({url: 'http://www.google.com'})
+// Query params
+api.set({query: {
+  foo: 'bar',
+  beep: 'boop'
+}})
+// Headers
+api.set({headers: {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+}})
 
+// Set up listeners
+// HTTP Errors like 50x or 40x
+api.on('httpError', (err) => {
+  console.log(err) // --> {HTTP STATUS CODE} raised by server
+})
+// Generic error, typically raised on data conversion error (eg JSON parse)
+api.on('error', (err) => {
+  console.log(err)
+})
+// Response emitter
+api.on('response', (data) => {
+  console.log(data) // --> requeste response object/string
+})
+// Validation error, if custom validation is passed this will be raise on error
+api.on('validationError', (err) => {
+  console.log(err) // --> {field: 'fieldName', message: 'error message'}
+})
 
+// Performing request
+// plain, typically for GET or DELETE
+api.request()
+// passing some data in the body, typically POST or PUT
+api.request({
+  username: 'yo',
+  password: 'yo'
+})
 
-For more examples take a look at the [examples](examples) folder.
+// Adding custom validation
+api.define({
+  validate () {
+    // grab fields
+    var username = this.username.val
+    var password = this.password.val
+    // validation errors
+    var errors = []
+    // start custom validation
+    if (!username) {
+      errors.push({
+        field: 'username',
+        message: 'field required'
+      })
+    }
+    if (!password) {
+      errors.push({
+        field: 'password',
+        message: 'field required'
+      })
+    }
+    // give back errors
+    return errors
+  }
+})
+
+// Adding custom data builder to send in body
+// it will receive as argument what is passed through `api.request(data)`
+api.define({
+  build (data) {
+    return {
+      user: {
+        username: data.username,
+        password: data.password
+      }
+    }
+  }
+})
+```
