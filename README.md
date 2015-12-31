@@ -57,7 +57,7 @@ var api = new Api()
 
 // Configure the API call: all at once, one by one or inject a config
 // JSON parse response
-api.set({jsonEncode: true})s
+api.set({encodeJson: true})s
 // HTTP Method
 api.set({httpMethod: 'post'})
 // URL
