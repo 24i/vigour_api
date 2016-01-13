@@ -6,7 +6,7 @@ var Api = require('../')
 
 // not encoding and no error
 var stringResponse = new Api({
-  url: 'https://demo2052708.mockable.io/stringResponse',
+  url: 'http://demo4427401.mockable.io/stringResponse',
   httpMethos: 'get',
   encodeJson: false,
   headers: {
@@ -22,7 +22,7 @@ stringResponse.request()
 
 // encoding and throwing error
 var errorForEncoding = new Api({
-  url: 'https://demo2052708.mockable.io/stringResponse',
+  url: 'http://demo4427401.mockable.io/stringResponse',
   httpMethos: 'get',
   encodeJson: true,
   headers: {
