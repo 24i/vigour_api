@@ -6,7 +6,7 @@ var Api = require('../')
 
 // passing query strings as json
 var queryJson = new Api({
-  url: 'https://demo2052708.mockable.io/queryTest',
+  url: 'http://demo4427401.mockable.io/queryTest',
   httpMethos: 'get',
   query: {
     val: {
@@ -26,7 +26,7 @@ queryJson.request()
 
 // passing query strings as string
 var queryString = new Api({
-  url: 'https://demo2052708.mockable.io/queryTest',
+  url: 'http://demo4427401.mockable.io/queryTest',
   httpMethos: 'get',
   query: 'query1=foo&query2=bar'
 })
