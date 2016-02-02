@@ -19,7 +19,7 @@
   "homepage": "https://github.com/vigour-io/api#readme",
   "dependencies": {
     "hyperquest": "^1.2.0",
-    "vigour-js": "^0.3.8"
+    "vigour-js": "^0.4.4"
   },
   "devDependencies": {
     "husky": "^0.10.2"
