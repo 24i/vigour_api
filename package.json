@@ -1,6 +1,6 @@
 {
   "name": "vigour-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Vigour generic API tool",
   "main": "lib/index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/vigour-io/api#readme",
   "dependencies": {
     "hyperquest": "^1.2.0",
-    "vigour-js": "^0.3.8"
+    "vigour-js": "^0.4.4"
   },
   "devDependencies": {
     "husky": "^0.10.2"
