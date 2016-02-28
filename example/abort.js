@@ -5,9 +5,10 @@ var http = require('http')
 var attempt = 0
 
 function handleRequest (request, response) {
+  ++attempt
   setTimeout(function () {
     response.writeHead(200, { 'Content-Type': 'text/plain' })
-    response.write('polling attempt ' + ++attempt)
+    response.write('abort ' + attempt)
     response.end()
   }, 5000)
 }
@@ -27,11 +28,26 @@ var abortCandidate = new Api({
 })
 
 abortCandidate.on('response', function (data) {
-  console.log('if you readm me it means something is wrong')
+  console.log('you should see me just one time')
+  console.log(data)
 })
 
 abortCandidate.loading.on('data', function () {
-  abortCandidate.abort()
+  console.log('Loading changed: ', abortCandidate.loading.val)
 })
 
-abortCandidate.request()
+setTimeout(function () {
+  abortCandidate.request()
+  setTimeout(function () {
+    abortCandidate.request()
+    setTimeout(function () {
+      abortCandidate.request()
+      setTimeout(function () {
+        abortCandidate.request()
+        setTimeout(function () {
+          abortCandidate.request()
+        }, 100)
+      }, 100)
+    }, 100)
+  }, 100)
+}, 100)
