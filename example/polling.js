@@ -26,7 +26,9 @@ var slowPoll = new Api({
 slowPoll.on('response', function (data) {
   console.log('[SLOW-INFINITE]', data)
 })
-slowPoll.poll(1000)
+slowPoll.poll.set({
+  val: 1000
+})
 
 // medium poll
 // one request every .5 seconds, max 100 times
@@ -36,7 +38,10 @@ var mediumPoll = new Api({
 mediumPoll.on('response', function (data) {
   console.log('[MEDIUM]', data)
 })
-mediumPoll.poll(500, 100)
+mediumPoll.poll.set({
+  val: 500,
+  max: 100
+})
 
 // crazy poll
 // inifite requests as fast as possible
@@ -46,4 +51,6 @@ var crazy = new Api({
 crazy.on('response', function (data) {
   console.log('[CRAZY]', data)
 })
-crazy.poll()
+crazy.poll.set({
+  val: 0
+})
