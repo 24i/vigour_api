@@ -46,8 +46,8 @@ setTimeout(function () {
         abortCandidate.request()
         setTimeout(function () {
           abortCandidate.request()
-        }, 200)
-      }, 200)
-    }, 200)
-  }, 200)
-}, 200)
+        }, 100)
+      }, 100)
+    }, 100)
+  }, 100)
+}, 100)
