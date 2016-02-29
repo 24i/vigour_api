@@ -22,19 +22,7 @@
     "vigour-js": "^0.5.3"
   },
   "devDependencies": {
-    "husky": "^0.10.2"
-  },
-  "standard": {
-    "globals": [
-      "alert",
-      "describe",
-      "it",
-      "expect",
-      "before",
-      "after",
-      "beforeEach",
-      "afterEach",
-      "sinon"
-    ]
+    "husky": "^0.10.2",
+    "tape": "^4.4.0"
   }
 }
