@@ -4,8 +4,7 @@
   "description": "Vigour generic API tool",
   "main": "lib/index.js",
   "scripts": {
-    "test": "gaston test",
-    "precommit": "./node_modules/.bin/standard lib/**/*.js"
+    "test": "node test"
   },
   "repository": {
     "type": "git",
