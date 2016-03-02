@@ -27,8 +27,8 @@ function createAppData () {
 
 api.set({ config: { url: url } })
 
-test('can make a post-http request using payload', function (t) {
-  t.plan(1)
+test('can make post-http requests using payload', function (t) {
+  t.plan(3)
   var data = createAppData()
   data.set({
     simple: {
@@ -51,8 +51,13 @@ test('can make a post-http request using payload', function (t) {
     }
   })
   api.set({ simple: {} })
-  api.simple.once('error', function (err) {
+  api.simple.once('error', (err) => {
     t.equal(err.message, 'Cannot parse response as JSON "simple" ')
   })
+  data.state.notification.once(function () {
+    t.equal(this.origin, data.simple.notifications.error)
+  })
   api.simple.val = data.simple
+
+
 })
