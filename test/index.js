@@ -122,4 +122,25 @@ test('get-http requests using single and multi-field payload', function (t) {
   api.simpleget.val = data.simpleget
 })
 
+test('polling', function (t) {
+  t.plan(5)
+  var data = createAppData()
+  data.set({
+    title: 'hello',
+    simpleget: {
+      data: [ '$', 'title' ]
+    }
+  })
+  api.set({
+    simpleget2: {
+      method: 'GET',
+      poll: { val: 10, max: 5 }
+    }
+  })
+  api.simpleget2.on('error', function (err) {
+    t.equal(err instanceof ApiError, true)
+  })
+  api.simpleget2.val = data.simpleget
+})
+
 // todo: kill server when done
