@@ -4,11 +4,16 @@ var http = require('http')
 var Observable = require('vigour-observable')
 var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
-var servObserv = new Observable({ properties: { req: true } })
+var servObserv = new Observable()
 var server = http.createServer((req, res) => {
   var body = ''
   res.writeHead(200, {'Content-Type': 'text/plain'})
-  servObserv.set({ req: req })
+  req.on('data', (chunk) => { body += chunk })
+  req.on('end', () => {
+    console.log('POST: ' + body)
+    servObserv.set({ payload: body })
+    res.end('ok')
+  })
 }).listen(3333)
 
 function createAppData () {
@@ -34,6 +39,8 @@ test('can make a post-http request using payload', function (t) {
       data: {
         field: 'a payload'
       },
+      success: false,
+      error: false,
       notifications: {
         error: {
           title: 'error',
@@ -47,7 +54,7 @@ test('can make a post-http request using payload', function (t) {
     }
   })
   servObserv.once((data) => {
-    console.log()
+    // console.log()
   })
   api.set({ simple: {} })
   api.simple.val = data.simple
