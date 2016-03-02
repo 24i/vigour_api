@@ -4,15 +4,12 @@ var http = require('http')
 var Observable = require('vigour-observable')
 var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
-var servObserv = new Observable()
 var server = http.createServer((req, res) => {
   var body = ''
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
   req.on('end', () => {
-    console.log('POST: ' + body)
-    servObserv.set({ payload: body })
-    res.end('ok')
+    res.end(body.response)
   })
 }).listen(3333)
 
@@ -53,9 +50,11 @@ test('can make a post-http request using payload', function (t) {
       }
     }
   })
-  servObserv.once((data) => {
-    // console.log()
-  })
   api.set({ simple: {} })
+  api.once('success', function () {
+    console.log('yo suc6!')
+  }).once('error', function () {
+    consoole.log('yo error!')
+  })
   api.simple.val = data.simple
 })
