@@ -6,13 +6,17 @@ var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
 var ApiError = require('../lib/error')
 var serverReqs = 0
+var serverUrl
 
 var server = http.createServer((req, res) => {
   var body = ''
   serverReqs++
+  serverUrl = req.url
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
-  req.on('end', () => { res.end(body) })
+  req.on('end', () => {
+    res.end(body)
+  })
 }).listen(3333)
 
 function createAppData () {
@@ -27,7 +31,7 @@ function createAppData () {
 
 api.set({ config: { url: url } })
 
-test('can make post-http requests using payload', function (t) {
+test('post-http requests using multi-field payload', function (t) {
   t.plan(9)
   var data = createAppData()
   data.set({
@@ -93,6 +97,29 @@ test('can make post-http requests using payload', function (t) {
       })
     })
   })
+})
+
+test('get-http requests using single and multi-field payload', function (t) {
+  t.plan(2)
+  var data = createAppData()
+  data.set({
+    title: 'hello',
+    simpleget: { data: [ '$', 'title' ] }
+  })
+  api.set({ simpleget: { method: 'GET' } })
+  api.simpleget.once('error', () => {
+    t.equal(serverUrl, '/hello')
+    data.simpleget.data.set({
+      val: void 0,
+      a: true,
+      b: true
+    })
+    data.simpleget.emit('data')
+    api.simpleget.once('error', () => {
+      t.equal(serverUrl, '/?a=true&b=true')
+    })
+  })
+  api.simpleget.val = data.simpleget
 })
 
 // todo: kill server when done
