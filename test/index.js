@@ -6,6 +6,7 @@ var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
 var ApiError = require('../lib/error')
 var serverReqs = 0
+var isEmpty = require('vigour-util/is/empty')
 
 var server = http.createServer((req, res) => {
   var body = ''
@@ -83,6 +84,7 @@ test('can make post-http requests using payload', function (t) {
       t.equal(arr[1], null)
       process.nextTick(() => {
         t.equal(serverReqs, 2)
+        t.equal(isEmpty(data.simple.data), true)
       })
     })
   })
