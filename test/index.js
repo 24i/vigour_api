@@ -27,7 +27,7 @@ function createAppData () {
 api.set({ config: { url: url } })
 
 test('can make post-http requests using payload', function (t) {
-  t.plan(4)
+  t.plan(6)
   var data = createAppData()
   data.set({
     simple: {
@@ -35,7 +35,7 @@ test('can make post-http requests using payload', function (t) {
       data: {
         field: 'a payload'
       },
-      success: false,
+      success: true,
       error: false,
       notifications: {
         error: {
@@ -51,9 +51,14 @@ test('can make post-http requests using payload', function (t) {
   })
   api.set({ simple: {} })
   api.simple.val = data.simple
-
   api.simple.once('error', (err) => {
     t.equal(err instanceof ApiError, true)
+  })
+  data.state.modal.current.once(function () {
+    t.equal(this.val, false)
+    this.once(function () {
+      t.equal(this.val, true)
+    })
   })
   data.state.notification.once(function () {
     t.equal(this.origin, data.simple.notifications.error)
