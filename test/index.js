@@ -51,10 +51,8 @@ test('can make a post-http request using payload', function (t) {
     }
   })
   api.set({ simple: {} })
-  api.once('success', function () {
-    console.log('yo suc6!')
-  }).once('error', function () {
-    consoole.log('yo error!')
+  api.simple.once('error', function (val) {
+    console.log('?', val)
   })
   api.simple.val = data.simple
 })
