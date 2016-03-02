@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "tape": "^4.4.0",
-    "vigour-observable": "^1.0.10",
-    "vigour-util": "^1.1.0"
+    "vigour-observable": "^1.0.10"
   }
 }
