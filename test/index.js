@@ -5,13 +5,12 @@ var Observable = require('vigour-observable')
 var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
 var ApiError = require('../lib/error')
+
 var server = http.createServer((req, res) => {
   var body = ''
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
-  req.on('end', () => {
-    res.end(body)
-  })
+  req.on('end', () => { res.end(body) })
 }).listen(3333)
 
 function createAppData () {
@@ -27,7 +26,7 @@ function createAppData () {
 api.set({ config: { url: url } })
 
 test('can make post-http requests using payload', function (t) {
-  t.plan(6)
+  t.plan(8)
   var data = createAppData()
   data.set({
     simple: {
@@ -54,12 +53,6 @@ test('can make post-http requests using payload', function (t) {
   api.simple.once('error', (err) => {
     t.equal(err instanceof ApiError, true)
   })
-  data.state.modal.current.once(function () {
-    t.equal(this.val, false)
-    this.once(function () {
-      t.equal(this.val, true)
-    })
-  })
   data.state.notification.once(function () {
     t.equal(this.origin, data.simple.notifications.error)
     data.simple.data.set({ success: true })
@@ -68,4 +61,26 @@ test('can make post-http requests using payload', function (t) {
     })
     data.simple.emit('data')
   })
+  data.state.modal.current.once(function () {
+    t.equal(this.val, false)
+    this.once(function () {
+      t.equal(this.val, true)
+      var arr = []
+      Object.defineProperty(api.simple, 'request', {
+        get () {
+          return this._request
+        },
+        set (val) {
+          arr.push(val)
+          this._request = val
+        }
+      })
+      data.simple.emit('data')
+      data.simple.emit('data')
+      t.equal(arr.length, 3)
+      t.equal(arr[1], null)
+    })
+  })
 })
+
+// todo: kill server when done
