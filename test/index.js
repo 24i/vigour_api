@@ -51,8 +51,8 @@ test('can make a post-http request using payload', function (t) {
     }
   })
   api.set({ simple: {} })
-  api.simple.once('error', function (val) {
-    console.log('?', val)
+  api.simple.once('error', function (err) {
+    t.equal(err.message, 'Cannot parse response as JSON "simple" ')
   })
   api.simple.val = data.simple
 })
