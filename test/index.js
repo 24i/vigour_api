@@ -3,128 +3,51 @@ var test = require('tape')
 var http = require('http')
 var Observable = require('vigour-observable')
 var api = new Observable(require('../'))
+var url = 'http://localhost:3333'
 
-stringResponse.on('response', (data) => {
-  console.log('ENCODE', 'on.response', 'data', data)
-})
+var server = http.createServer((req, res) => {
+  console.log(req)
+  emit.emit(req)
+  res.writeHead(200, {'Content-Type': 'text/plain'})
+  res.end('okay')
+}).listen(3333)
 
-test('can make an http formData request', function (t) {
+function createAppData () {
+  var data = new Observable({
+    state: {
+      notification: {},
+      modal: {
+        current: {}
+      }
+    }
+  })
+  return data
+}
+
+api.set({ config: { url: url } })
+
+test('can make a post-http request using payload', function (t) {
   t.plan(1)
-  // api
-  // use concsturctor
-
-  // var stringResponse = new Api({
-  //   url: 'http://demo4427401.mockable.io/stringResponse',
-  //   method: 'get', // typo
-  //   encodeJson: false,
-  //   headers: {
-  //     'Accept': 'text/plain'
-  //   }
-  // })
-
-  // formLogin.request({
-  //   username: 'valerio12345@mailinator.com',
-  //   password: 'password'
-  // })
-
-})
-
-/*
-"api": {
-      "scraper": {
-        "url": "http://adm-scraper.vigour.io/",
-        "encodeJson": true,
-        "headers": {
-          "accept-encoding": "*",
-          "accept": "application/json"
-        }
+  var data = createAppData()
+  data.set({
+    simple: {
+      api: 'simple',
+      data: {
+        field: 'its a field!'
       },
-      "emailConfirm": {
-        "url": "http://adm-proxy.vigour.io/email/confirm/",
-        "encodeJson": true,
-        "headers": {
-          "accept": "application/json"
-        }
-      },
-      "newsletter": {
-        "url": "http://adm-proxy.vigour.io/user/",
-        "encodeJson": true,
-        "httpMethod": "put",
-        "headers": {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        }
-      },
-      "video": {
-        "getSource": {
-          "url": "http://adm-proxy.vigour.io/video/",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json"
-          }
+      notifications: {
+        error: {
+          title: 'error',
+          subtitle: 'sub-error'
         },
-        "sendPlayback": {
-          "url": "http://adm-proxy.vigour.io/video/",
-          "httpMethod": "post",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json"
-          }
-        },
-        "sendEvent": {
-          "url": "http://adm-proxy.vigour.io/video/event/",
-          "httpMethod": "post",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json"
-          }
-        }
-      },
-      "password": {
-        "forgot": {
-          "url": "http://adm-proxy.vigour.io/password/forgot/",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json"
-          }
-        },
-        "reset": {
-          "url": "http://adm-proxy.vigour.io/password/reset",
-          "encodeJson": true,
-          "httpMethod": "post",
-          "headers": {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          }
-        }
-      },
-      "auth": {
-        "verify": {
-          "url": "http://adm-proxy.vigour.io/verify/",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json"
-          }
-        },
-        "login": {
-          "url": "http://adm-proxy.vigour.io/login/api",
-          "httpMethod": "post",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          }
-        },
-        "register": {
-          "url": "http://adm-proxy.vigour.io/register",
-          "httpMethod": "post",
-          "encodeJson": true,
-          "headers": {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          }
+        success: {
+          title: 'success',
+          subtitle: 'sub-success'
         }
       }
     }
-  },
-*/
+  })
+  console.log(api)
+  api.set({ simple: {} })
+  api.simple.val = data.simple
+})
