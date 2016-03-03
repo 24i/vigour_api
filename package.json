@@ -1,6 +1,6 @@
 {
   "name": "vigour-api",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Vigour generic API tool",
   "main": "lib/index.js",
   "scripts": {
