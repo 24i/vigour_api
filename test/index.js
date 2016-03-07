@@ -19,38 +19,15 @@ var server = http.createServer((req, res) => {
   })
 }).listen(3333)
 
-function createAppData () {
-  var data = new Observable({
-    state: {
-      notification: {},
-      modal: { current: {} }
-    }
-  })
-  return data
-}
-
 api.set({ config: { url: url } })
 
 test('post-http requests using multi-field payload', function (t) {
   t.plan(9)
-  var data = createAppData()
-  data.set({
+  var data = new Observable({
     simple: {
       api: 'simple',
       data: {
         field: 'a payload'
-      },
-      success: true,
-      error: false,
-      notifications: {
-        error: {
-          title: 'error',
-          subtitle: 'sub-error'
-        },
-        success: {
-          title: 'success',
-          subtitle: 'sub-success'
-        }
       }
     }
   })
@@ -58,16 +35,10 @@ test('post-http requests using multi-field payload', function (t) {
   api.simple.val = data.simple
   api.simple.once('error', (err) => {
     t.equal(err instanceof ApiError, true)
-  })
-  data.state.notification.once(function () {
-    t.equal(this.origin, data.simple.notifications.error)
     data.simple.data.set({ success: true })
-    data.state.notification.once(function () {
-      t.equal(this.origin, data.simple.notifications.success)
-    })
     data.simple.emit('data')
   })
-  data.state.modal.current.once(function () {
+  api.once('success', function () {
     t.equal(this.val, false)
     this.once(function () {
       t.equal(this.val, true)
@@ -98,49 +69,3 @@ test('post-http requests using multi-field payload', function (t) {
     })
   })
 })
-
-test('get-http requests using single and multi-field payload', function (t) {
-  t.plan(2)
-  var data = createAppData()
-  data.set({
-    title: 'hello',
-    simpleget: { data: [ '$', 'title' ] }
-  })
-  api.set({ simpleget: { method: 'GET' } })
-  api.simpleget.once('error', () => {
-    t.equal(serverUrl, '/hello')
-    data.simpleget.data.set({
-      val: void 0,
-      a: true,
-      b: true
-    })
-    data.simpleget.emit('data')
-    api.simpleget.once('error', () => {
-      t.equal(serverUrl, '/?a=true&b=true')
-    })
-  })
-  api.simpleget.val = data.simpleget
-})
-
-test('polling', function (t) {
-  t.plan(5)
-  var data = createAppData()
-  data.set({
-    title: 'hello',
-    simpleget: {
-      data: [ '$', 'title' ]
-    }
-  })
-  api.set({
-    simpleget2: {
-      method: 'GET',
-      poll: { val: 10, max: 5 }
-    }
-  })
-  api.simpleget2.on('error', function (err) {
-    t.equal(err instanceof ApiError, true)
-  })
-  api.simpleget2.val = data.simpleget
-})
-
-// todo: kill server when done
