@@ -22,50 +22,22 @@ var server = http.createServer((req, res) => {
 api.set({ config: { url: url } })
 
 test('post-http requests using multi-field payload', function (t) {
-  t.plan(9)
-  var data = new Observable({
-    simple: {
-      api: 'simple',
-      data: {
-        field: 'a payload'
-      }
+  t.plan(3)
+  var obs = new Observable({
+    data: { // maybe call this payload by default?
+      field: 'a payload'
     }
   })
   api.set({ simple: {} })
-  api.simple.val = data.simple
-  api.simple.once('error', (err) => {
+  api.simple.val = obs
+  api.simple.once('error', function (err, event) {
     t.equal(err instanceof ApiError, true)
-    data.simple.data.set({ success: true })
-    data.simple.emit('data')
-  })
-  api.once('success', function () {
-    t.equal(this.val, false)
-    this.once(function () {
-      t.equal(this.val, true)
-      var arr = []
-      Object.defineProperty(api.simple, 'request', {
-        get () {
-          return this._request
-        },
-        set (val) {
-          arr.push(val)
-          this._request = val
-        }
-      })
-      data.simple.emit('data')
-      data.simple.emit('data')
-      t.equal(arr.length, 3)
-      t.equal(arr[1], null)
-      process.nextTick(() => {
-        var isEmpty = true
-        t.equal(serverReqs, 2)
-        data.simple.data.each(function (val) {
-          if (val.val !== void 0) {
-            isEmpty = false
-          }
-        })
-        t.equal(isEmpty, true)
-      })
+    console.log(event, obs)
+    // t.equal(event.type, '')
+    obs.data.set({ success: true })
+    this.once('success', function (data) {
+      console.log('XXX', data)
     })
+    obs.emit('data')
   })
 })
