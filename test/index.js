@@ -22,7 +22,7 @@ var server = http.createServer((req, res) => {
 api.set({ config: { url: url } })
 
 test('post request using a multi-field payload', function (t) {
-  t.plan(1)
+  t.plan(2)
   api.set({ simple: {} })
   api.simple.set({
     a: true,
@@ -30,6 +30,11 @@ test('post request using a multi-field payload', function (t) {
   }).once('error', function (err) {
     this.once('success', function (data) {
       t.deepEqual(data, { a: true, b: true, success: true })
+      this.b.set('b field')
+      this.once('success', function (data) {
+        t.equal(data.b, 'b field')
+      })
+      this.emit('data')
     })
     this.set({ success: true })
   })
