@@ -50,9 +50,9 @@ function postRequest (t, target) {
 
 test('post request using a multi-field payload', postRequest)
 
-// test('post request using a multi-field payload over a reference', function (t) {
-//   postRequest(t, new Observable())
-// })
+test('post request using a multi-field payload over a reference', function (t) {
+  postRequest(t, new Observable())
+})
 
 // test('payload field and mapPayload method', function (t) {
 //   t.plan(2)
