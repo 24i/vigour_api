@@ -1,2 +1,2 @@
 # Vigour API
-A utility to perform observing API calls
+A utility to perform observable API calls
