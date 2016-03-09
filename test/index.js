@@ -14,76 +14,69 @@ var server = http.createServer((req, res) => {
   serverUrl = req.url
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
-  req.on('end', () => res.end(body))
+  req.on('end', () => {
+    res.end(body)
+  })
 }).listen(3333)
 
 api.set({ config: { url: url } })
 
-test('post request using a multi-field payload', function (t) {
+function postRequest (t, target) {
   t.plan(2)
   api.set({ simple: {} })
-  api.simple.set({
-    a: true,
-    b: true
-  }).once('error', function (err) {
+  if (!target) {
+    target = api.simple
+  } else {
+    api.set(target, false)
+  }
+  api.simple.once('error', function (err) {
     this.once('success', function (data) {
-      t.deepEqual(data, { a: true, b: true, success: true })
-      this.b.set('b field')
+      t.deepEqual(
+        data,
+        { a: true, b: true, success: true },
+        'received correct payload'
+      )
+      target.b.set('b field')
       this.once('success', function (data) {
-        t.equal(data.b, 'b field')
+        t.equal(data.b, 'b field', 'received changed field b')
+        api.simple.remove()
       })
-      this.emit('data')
+      target.emit('data')
     })
-    this.set({ success: true })
+    target.set({ success: true })
   })
-})
+  target.set({ a: true, b: true })
+}
 
-test('post request using a multi-field payload over a reference', function (t) {
-  t.plan(2)
-  api.set({ simple: {} })
-  var obs = new Observable({
-    a: 'obs a',
-    b: 'obs b'
-  })
-  api.simple.set(obs).once('error', function (err) {
-    this.once('success', function (data) {
-      t.deepEqual(data, { a: 'obs a', b: 'obs b', success: true })
-      this.origin.b.set('obs b field')
-      this.once('success', function (data) {
-        t.equal(data.b, 'obs b field')
-      })
-      this.origin.emit('data')
-    })
-    obs.set({ success: true })
-  })
-})
+test('post request using a multi-field payload', postRequest)
 
-test('payload field and mapPayload method', function (t) {
-  t.plan(1)
-  api.set({
-    simple: {
-      payload: 'data',
-      mapPayload (payload, event) {
-        return { success: true, special: true }
-      }
-    }
-  })
-  api.simple.once('success', function(data) {
-    t.deepEqual(data, { success: true, special: true })
-  })
-  api.simple.set({
-    data: 'something special'
-  })
-})
+// test('post request using a multi-field payload over a reference', function (t) {
+//   postRequest(t, new Observable())
+// })
 
-test('get method', function (t) {
-  t.plan(1)
-  api.set({
-    simple: {
-      method: 'GET'
-    }
-  })
-  api.simple.once('success', function(data) {
-    t.deepEqual(data, { success: true, special: true })
-  })
-})
+// test('payload field and mapPayload method', function (t) {
+//   t.plan(2)
+//   api.set({
+//     simple: {
+//       payload: 'data',
+//       mapPayload (payload, event) {
+//         t.equal(payload, 'something special', 'found correct payload')
+//         return { success: true, special: true }
+//       },
+//       data: 'something special'
+//     }
+//   })
+//   api.simple.once('success', function(data) {
+//     t.deepEqual(data, { success: true, special: true })
+//   })
+// })
+
+// test('get method', function (t) {
+//   t.plan(1)
+//   api.set({
+//     simple: { method: 'GET' }
+//   })
+//   api.simple.once('success', function(data) {
+//     t.deepEqual(data, { success: true, special: true })
+//   })
+// })
