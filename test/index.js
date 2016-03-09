@@ -27,7 +27,7 @@ function postRequest (t, target) {
   if (!target) {
     target = api.simple
   } else {
-    api.set(target, false)
+    api.simple.set(target)
   }
   api.simple.once('error', function (err) {
     this.once('success', function (data) {
