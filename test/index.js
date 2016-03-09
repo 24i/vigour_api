@@ -15,6 +15,7 @@ var server = http.createServer((req, res) => {
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
   req.on('end', () => {
+    if (!body) { body = req.url }
     res.end(body)
   })
 }).listen(3333)
@@ -54,29 +55,45 @@ test('post request using a multi-field payload over a reference', function (t) {
   postRequest(t, new Observable())
 })
 
-// test('payload field and mapPayload method', function (t) {
-//   t.plan(2)
-//   api.set({
-//     simple: {
-//       payload: 'data',
-//       mapPayload (payload, event) {
-//         t.equal(payload, 'something special', 'found correct payload')
-//         return { success: true, special: true }
-//       },
-//       data: 'something special'
-//     }
-//   })
-//   api.simple.once('success', function(data) {
-//     t.deepEqual(data, { success: true, special: true })
-//   })
-// })
+test('payload field and mapPayload method', function (t) {
+  t.plan(2)
+  api.set({
+    simple: {
+      payload: 'data',
+      mapPayload (payload, event) {
+        t.equal(payload, 'something special', 'parsed correct payload')
+        return { success: true, special: true }
+      },
+      data: 'something special'
+    }
+  })
+  api.simple.once('success', function(data) {
+    t.deepEqual(data, { success: true, special: true })
+    api.simple.remove()
+  })
+})
 
-// test('get method', function (t) {
-//   t.plan(1)
-//   api.set({
-//     simple: { method: 'GET' }
-//   })
-//   api.simple.once('success', function(data) {
-//     t.deepEqual(data, { success: true, special: true })
-//   })
-// })
+test('get method', function (t) {
+  t.plan(2)
+  api.set({
+    simple: {
+      method: 'GET',
+      json: false,
+      isError (val) {
+        return typeof val !== 'string'
+      }
+    }
+  })
+  api.simple.once('success', function (data) {
+    t.equal(data, '/hello', 'received parsed url "/hello"')
+    this.set({
+      val: void 0,
+      a: true,
+      b: true
+    })
+    this.once('success', function (data) {
+      t.equal(data, '/?a=true&b=true', 'received parsed qeurystring "/?a=true&b=true"')
+    })
+  })
+  api.simple.set('hello')
+})
