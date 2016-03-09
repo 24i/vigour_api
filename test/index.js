@@ -22,11 +22,15 @@ var server = http.createServer((req, res) => {
 api.set({ config: { url: url } })
 
 test('post request using a multi-field payload', function (t) {
-  // t.plan(3)
+  t.plan(1)
   api.set({ simple: {} })
   api.simple.set({
     a: true,
     b: true
+  }).once('error', function (err) {
+    this.once('success', function (data) {
+      t.deepEqual(data, { a: true, b: true, success: true })
+    })
+    this.set({ success: true })
   })
-  t.end()
 })
