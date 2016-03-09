@@ -39,3 +39,23 @@ test('post request using a multi-field payload', function (t) {
     this.set({ success: true })
   })
 })
+
+test('post request using a multi-field payload over a reference', function (t) {
+  t.plan(2)
+  api.set({ simple: {} })
+  var obs = new Observable({
+    a: 'obs a',
+    b: 'obs b'
+  })
+  api.simple.set(obs).once('error', function (err) {
+    this.once('success', function (data) {
+      t.deepEqual(data, { a: 'obs a', b: 'obs b', success: true })
+      this.origin.b.set('obs b field')
+      this.once('success', function (data) {
+        t.equal(data.b, 'obs b field')
+      })
+      this.origin.emit('data')
+    })
+    obs.set({ success: true })
+  })
+})
