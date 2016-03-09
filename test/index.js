@@ -68,7 +68,7 @@ test('payload field and mapPayload method', function (t) {
     }
   })
   api.simple.once('success', function(data) {
-    t.deepEqual(data, { success: true, special: true })
+    t.deepEqual(data, { success: true, special: true }, 'received correct payload')
     api.simple.remove()
   })
 })
@@ -93,19 +93,33 @@ test('get method', function (t) {
     })
     this.once('success', function (data) {
       t.equal(data, '/?a=true&b=true', 'received parsed qeurystring "/?a=true&b=true"')
+      api.simple.remove()
     })
   })
   api.simple.set('hello')
 })
 
+// make a helper function to clean this up a bit (remove the pyramid style)
+
 test('loading observable', function (t) {
-  t.plan(2)
+  t.plan(5)
   api.set({ simple: {} })
   api.simple.loading.once(function (data) {
     t.equal(data, true, 'loading')
     this.once(function (data) {
+      var time = Date.now()
       t.equal(data, false, 'loading complete')
+      this.set({ min: 100 })
+      this.once(function (data) {
+        t.equal(data, true, 'loading, minimum time of 100ms')
+        this.once(function () {
+          var elapsed = Date.now() - time
+          t.equal(elapsed > 99, true, 'loading time is larger then 99ms')
+        })
+      })
+      api.simple.set({ success: false })
+      api.simple.emit('data')
     })
   })
-  api.simple.val = { success: true }
+  api.simple.set({ success: true })
 })
