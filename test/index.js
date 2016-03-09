@@ -14,9 +14,7 @@ var server = http.createServer((req, res) => {
   serverUrl = req.url
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
-  req.on('end', () => {
-    res.end(body)
-  })
+  req.on('end', () => res.end(body))
 }).listen(3333)
 
 api.set({ config: { url: url } })
@@ -57,5 +55,35 @@ test('post request using a multi-field payload over a reference', function (t) {
       this.origin.emit('data')
     })
     obs.set({ success: true })
+  })
+})
+
+test('payload field and mapPayload method', function (t) {
+  t.plan(1)
+  api.set({
+    simple: {
+      payload: 'data',
+      mapPayload (payload, event) {
+        return { success: true, special: true }
+      }
+    }
+  })
+  api.simple.once('success', function(data) {
+    t.deepEqual(data, { success: true, special: true })
+  })
+  api.simple.set({
+    data: 'something special'
+  })
+})
+
+test('get method', function (t) {
+  t.plan(1)
+  api.set({
+    simple: {
+      method: 'GET'
+    }
+  })
+  api.simple.once('success', function(data) {
+    t.deepEqual(data, { success: true, special: true })
   })
 })
