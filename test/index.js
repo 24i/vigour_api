@@ -29,8 +29,8 @@ var server = http.createServer((req, res) => {
 }).listen(3333)
 
 test.onFinish(function () {
-  console.log('????')
   server.close()
+  process.exit()
 })
 
 api.set({ config: { url: url } })
@@ -114,7 +114,7 @@ test('get method', function (t) {
 
 // make a helper function to clean this up a bit (remove the pyramid)
 test('loading observable', function (t) {
-  t.plan(6)
+  t.plan(5)
   api.set({ simple: {} })
   api.simple.loading.once(function (data) {
     t.equal(data, true, 'loading')
@@ -143,4 +143,26 @@ test('loading observable', function (t) {
     })
   })
   api.simple.set({ success: true })
+})
+
+test('poll', function (t) {
+  t.plan(5)
+  api.set({
+    simple: {
+      method: 'GET',
+      poll: {
+        val: 100,
+        max: 5
+      },
+      json: false,
+      isError (val) {
+        return typeof val !== 'string'
+      }
+    }
+  })
+  var cnt = 0
+  api.simple.on('success', function (data) {
+    t.equal(data, '/hello', 'poll success: ' + (++cnt))
+  })
+  api.simple.set('hello')
 })
