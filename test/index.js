@@ -15,10 +15,23 @@ var server = http.createServer((req, res) => {
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
   req.on('end', () => {
+    var parsed
+    if (body) {
+      try {
+        parsed = JSON.parse(body)
+      } catch(e) {}
+    }
     if (!body) { body = req.url }
-    res.end(body)
+    if (!parsed || !parsed.neverrespond) {
+      res.end(body)
+    }
   })
 }).listen(3333)
+
+test.onFinish(function () {
+  console.log('????')
+  server.close()
+})
 
 api.set({ config: { url: url } })
 
@@ -99,22 +112,30 @@ test('get method', function (t) {
   api.simple.set('hello')
 })
 
-// make a helper function to clean this up a bit (remove the pyramid style)
-
+// make a helper function to clean this up a bit (remove the pyramid)
 test('loading observable', function (t) {
-  t.plan(5)
+  t.plan(6)
   api.set({ simple: {} })
   api.simple.loading.once(function (data) {
     t.equal(data, true, 'loading')
     this.once(function (data) {
       var time = Date.now()
       t.equal(data, false, 'loading complete')
-      this.set({ min: 100 })
+      this.set({ min: 100, max: 200 })
       this.once(function (data) {
         t.equal(data, true, 'loading, minimum time of 100ms')
         this.once(function () {
-          var elapsed = Date.now() - time
+          var d = Date.now()
+          var elapsed = d - time
+          time = d
           t.equal(elapsed > 99, true, 'loading time is larger then 99ms')
+          api.simple.set({ neverrespond: true })
+          this.once(function (data) {
+            d = Date.now()
+            elapsed = d - time
+            t.equal(elapsed < 210, true, 'loading time is less then 210ms')
+            api.simple.remove()
+          })
         })
       })
       api.simple.set({ success: false })
