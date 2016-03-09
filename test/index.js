@@ -97,3 +97,15 @@ test('get method', function (t) {
   })
   api.simple.set('hello')
 })
+
+test('loading observable', function (t) {
+  t.plan(2)
+  api.set({ simple: {} })
+  api.simple.loading.once(function (data) {
+    t.equal(data, true, 'loading')
+    this.once(function (data) {
+      t.equal(data, false, 'loading complete')
+    })
+  })
+  api.simple.val = { success: true }
+})
