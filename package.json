@@ -18,6 +18,7 @@
   "homepage": "https://github.com/vigour-io/api#readme",
   "dependencies": {
     "vigour-event": "^1.0.3",
+    "vigour-util": "^1.0.3",
     "hyperquest": "^1.2.0"
   },
   "devDependencies": {

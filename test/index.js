@@ -21,23 +21,12 @@ var server = http.createServer((req, res) => {
 
 api.set({ config: { url: url } })
 
-test('post-http requests using multi-field payload', function (t) {
-  t.plan(3)
-  var obs = new Observable({
-    data: { // maybe call this payload by default?
-      field: 'a payload'
-    }
-  })
+test('post request using a multi-field payload', function (t) {
+  // t.plan(3)
   api.set({ simple: {} })
-  api.simple.val = obs
-  api.simple.once('error', function (err, event) {
-    t.equal(err instanceof ApiError, true)
-    console.log(event, obs)
-    // t.equal(event.type, '')
-    obs.data.set({ success: true })
-    this.once('success', function (data) {
-      console.log('XXX', data)
-    })
-    obs.emit('data')
+  api.simple.set({
+    a: true,
+    b: true
   })
+  t.end()
 })
