@@ -15,132 +15,154 @@ var server = http.createServer((req, res) => {
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
   req.on('end', () => {
-    res.end(body)
+    var parsed
+    if (body) {
+      try {
+        parsed = JSON.parse(body)
+      } catch(e) {}
+    }
+    if (!body) { body = req.url }
+    if (!parsed || !parsed.neverrespond) {
+      res.end(body)
+    }
   })
 }).listen(3333)
 
-function createAppData () {
-  var data = new Observable({
-    state: {
-      notification: {},
-      modal: { current: {} }
-    }
-  })
-  return data
-}
+test.onFinish(function () {
+  server.close()
+  process.exit()
+})
 
 api.set({ config: { url: url } })
 
-test('post-http requests using multi-field payload', function (t) {
-  t.plan(9)
-  var data = createAppData()
-  data.set({
+function postRequest (t, target) {
+  t.plan(2)
+  api.set({ simple: {} })
+  if (!target) {
+    target = api.simple
+  } else {
+    api.simple.set(target)
+  }
+  api.simple.once('error', function (err) {
+    this.once('success', function (data) {
+      t.deepEqual(
+        data,
+        { a: true, b: true, success: true },
+        'received correct payload'
+      )
+      target.b.set('b field')
+      this.once('success', function (data) {
+        t.equal(data.b, 'b field', 'received changed field b')
+        api.simple.remove()
+      })
+      target.emit('data')
+    })
+    target.set({ success: true })
+  })
+  target.set({ a: true, b: true })
+}
+
+test('post request using a multi-field payload', postRequest)
+
+test('post request using a multi-field payload over a reference', function (t) {
+  postRequest(t, new Observable())
+})
+
+test('payload field and mapPayload method', function (t) {
+  t.plan(2)
+  api.set({
     simple: {
-      api: 'simple',
-      data: {
-        field: 'a payload'
+      payload: 'data',
+      mapPayload (payload, event) {
+        t.equal(payload, 'something special', 'parsed correct payload')
+        return { success: true, special: true }
       },
-      success: true,
-      error: false,
-      notifications: {
-        error: {
-          title: 'error',
-          subtitle: 'sub-error'
-        },
-        success: {
-          title: 'success',
-          subtitle: 'sub-success'
-        }
-      }
+      data: 'something special'
     }
   })
-  api.set({ simple: {} })
-  api.simple.val = data.simple
-  api.simple.once('error', (err) => {
-    t.equal(err instanceof ApiError, true)
-  })
-  data.state.notification.once(function () {
-    t.equal(this.origin, data.simple.notifications.error)
-    data.simple.data.set({ success: true })
-    data.state.notification.once(function () {
-      t.equal(this.origin, data.simple.notifications.success)
-    })
-    data.simple.emit('data')
-  })
-  data.state.modal.current.once(function () {
-    t.equal(this.val, false)
-    this.once(function () {
-      t.equal(this.val, true)
-      var arr = []
-      Object.defineProperty(api.simple, 'request', {
-        get () {
-          return this._request
-        },
-        set (val) {
-          arr.push(val)
-          this._request = val
-        }
-      })
-      data.simple.emit('data')
-      data.simple.emit('data')
-      t.equal(arr.length, 3)
-      t.equal(arr[1], null)
-      process.nextTick(() => {
-        var isEmpty = true
-        t.equal(serverReqs, 2)
-        data.simple.data.each(function (val) {
-          if (val.val !== void 0) {
-            isEmpty = false
-          }
-        })
-        t.equal(isEmpty, true)
-      })
-    })
+  api.simple.once('success', function(data) {
+    t.deepEqual(data, { success: true, special: true }, 'received correct payload')
+    api.simple.remove()
   })
 })
 
-test('get-http requests using single and multi-field payload', function (t) {
+test('get method', function (t) {
   t.plan(2)
-  var data = createAppData()
-  data.set({
-    title: 'hello',
-    simpleget: { data: [ '$', 'title' ] }
+  api.set({
+    simple: {
+      method: 'GET',
+      json: false,
+      isError (val) {
+        return typeof val !== 'string'
+      }
+    }
   })
-  api.set({ simpleget: { method: 'GET' } })
-  api.simpleget.once('error', () => {
-    t.equal(serverUrl, '/hello')
-    data.simpleget.data.set({
+  api.simple.once('success', function (data) {
+    t.equal(data, '/hello', 'received parsed url "/hello"')
+    this.set({
       val: void 0,
       a: true,
       b: true
     })
-    data.simpleget.emit('data')
-    api.simpleget.once('error', () => {
-      t.equal(serverUrl, '/?a=true&b=true')
+    this.once('success', function (data) {
+      t.equal(data, '/?a=true&b=true', 'received parsed qeurystring "/?a=true&b=true"')
+      api.simple.remove()
     })
   })
-  api.simpleget.val = data.simpleget
+  api.simple.set('hello')
 })
 
-test('polling', function (t) {
+// make a helper function to clean this up a bit (remove the pyramid)
+test('loading observable', function (t) {
   t.plan(5)
-  var data = createAppData()
-  data.set({
-    title: 'hello',
-    simpleget: {
-      data: [ '$', 'title' ]
-    }
+  api.set({ simple: {} })
+  api.simple.loading.once(function (data) {
+    t.equal(data, true, 'loading')
+    this.once(function (data) {
+      var time = Date.now()
+      t.equal(data, false, 'loading complete')
+      this.set({ min: 100, max: 200 })
+      this.once(function (data) {
+        t.equal(data, true, 'loading, minimum time of 100ms')
+        this.once(function () {
+          var d = Date.now()
+          var elapsed = d - time
+          time = d
+          t.equal(elapsed > 99, true, 'loading time is larger then 99ms')
+          api.simple.set({ neverrespond: true })
+          this.once(function (data) {
+            d = Date.now()
+            elapsed = d - time
+            t.equal(elapsed < 210, true, 'loading time is less then 210ms')
+            api.simple.remove()
+          })
+        })
+      })
+      api.simple.set({ success: false })
+      api.simple.emit('data')
+    })
   })
-  api.set({
-    simpleget2: {
-      method: 'GET',
-      poll: { val: 10, max: 5 }
-    }
-  })
-  api.simpleget2.on('error', function (err) {
-    t.equal(err instanceof ApiError, true)
-  })
-  api.simpleget2.val = data.simpleget
+  api.simple.set({ success: true })
 })
 
-// todo: kill server when done
+test('poll', function (t) {
+  t.plan(5)
+  api.set({
+    simple: {
+      method: 'GET',
+      poll: {
+        val: 100,
+        max: 5
+      },
+      json: false,
+      isError (val) {
+        return typeof val !== 'string'
+      }
+    }
+  })
+  var cnt = 0
+  api.simple.on('success', function (data) {
+    t.equal(data, '/hello', 'poll success: ' + (++cnt))
+  })
+  api.simple.set('hello')
+})
