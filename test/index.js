@@ -150,10 +150,7 @@ test('poll', function (t) {
   api.set({
     simple: {
       method: 'GET',
-      poll: {
-        val: 100,
-        max: 5
-      },
+      poll: { val: 100, max: 5 },
       json: false,
       isError (val) {
         return typeof val !== 'string'
@@ -165,4 +162,27 @@ test('poll', function (t) {
     t.equal(data, '/hello', 'poll success: ' + (++cnt))
   })
   api.simple.set('hello')
+})
+
+test('correct amount of fire-ing of listeners', function (t) {
+  var success = 0
+  var error = 0
+  api.set({ something: {} })
+  api.something.on('success', function () { success++ })
+  api.something.on('error', function () { error++ })
+  api.set(void 0)
+  var obs = new Observable()
+  api.something.set(obs)
+  obs.set(false)
+  api.something.set({ url: { $add: '/bla' }})
+  fired()
+  obs.set(100)
+  fired()
+
+  function fired (good, bad) {
+    if (!good) { good = 0 }
+    if (!bad) { bad = 0 }
+    t.equal(error, bad, 'error fired ' + bad + ' times')
+    t.equal(success, good, 'success fired ' + good + ' times')
+  }
 })
