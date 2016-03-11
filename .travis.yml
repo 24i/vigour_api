@@ -1,19 +1,9 @@
+# .travis.yml
 language: node_js
+
 node_js:
-  - "4.2.2"
-  - "5.0.0"
-git:
-  submodules: false
-branches:
-  only:
-    - master
-    - develop
-before_install:
-  - npm install -g vigour-sentinel
-script:
-  - sentinel
-after_failure:
-  - sentinel --notify-fail
-sudo: required
-services:
-  - docker
+  - '5.4'
+  - '4.4'
+
+notifications:
+  email: false
