@@ -53,7 +53,7 @@ test('payload field and mapPayload method', function (t) {
   t.plan(2)
   api.set({
     simple: {
-      payload: 'data',
+      payloadField: 'data',
       mapPayload (payload, event) {
         t.equal(payload, 'something special', 'parsed correct payload')
         return { success: true, special: true }
