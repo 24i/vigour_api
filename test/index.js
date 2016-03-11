@@ -5,13 +5,9 @@ var Observable = require('vigour-observable')
 var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
 var ApiError = require('../lib/error')
-var serverReqs = 0
-var serverUrl
 
 var server = http.createServer((req, res) => {
   var body = ''
-  serverReqs++
-  serverUrl = req.url
   res.writeHead(200, {'Content-Type': 'text/plain'})
   req.on('data', (chunk) => { body += chunk })
   req.on('end', () => {
@@ -33,8 +29,8 @@ var server = http.createServer((req, res) => {
 }).listen(3333)
 
 test.onFinish(function () {
-  // server.close()
-  // process.exit()
+  server.close()
+  process.exit()
 })
 
 api.set({ config: { url: url } })
@@ -168,28 +164,42 @@ test('poll', function (t) {
   api.simple.set('hello')
 })
 
-test('listeners fire the correctly', function (t) {
-  var success = 0
-  var error = 0
-  var obs = new Observable()
+function testResponses (api, t) {
+    var success = 0
+    var error = 0
+    var obs = new Observable()
+    api.on('success', function () { success++ })
+    api.on('error', function () { error++ })
+    api.set(void 0)
+    api.set(obs)
+    obs.set('')
+    api.set({ url: { $add: '/bla' }})
+    // using timeouts since we want to test if responses are handled or not
+    setTimeout(function () {
+      fired()
+      obs.set(100)
+      setTimeout(function () {
+        fired('setting reference', 0, 1)
+        api.remove()
+        t.end()
+      }, 100)
+    }, 100)
 
-  api.set({ something: {} })
-  api.something.on('success', function () { success++ })
-  api.something.on('error', function () { error++ })
-  api.something.set(void 0)
-  api.something.set(obs)
-  obs.set(false)
-  api.something.set({ url: { $add: '/bla' }})
-  fired()
-  obs.set(100)
-  fired('setting reference', 0, 1)
-  t.end()
-
-  function fired (msg, good, bad) {
-    if (!good) { good = 0 }
-    if (!bad) { bad = 0 }
-    msg = msg ? msg + ', ' : ''
-    t.equal(error, bad, msg + 'error fired: ' + bad)
-    t.equal(success, good, msg + 'success fired: ' + good)
+    function fired (msg, good, bad) {
+      if (!good) { good = 0 }
+      if (!bad) { bad = 0 }
+      msg = msg ? msg + ', ' : ''
+      t.equal(error, bad, msg + 'error fired: ' + bad)
+      t.equal(success, good, msg + 'success fired: ' + good)
+    }
   }
+
+test('post request listeners fire correctly', function (t) {
+  api.set({ something: {} })
+  testResponses(api.something, t)
+})
+
+test('get request listeners fire correctly', function (t) {
+  api.set({ something: { method: 'GET' } })
+  testResponses(api.something, t)
 })
