@@ -154,6 +154,10 @@ function testResponses (api, t) {
     api.set(void 0)
     api.set(obs)
     obs.set('')
+    obs.set({
+      properties: { something: true },
+      something: {}
+    })
     api.set({ url: { $add: '/bla' }})
     // using timeouts since we want to test if responses are handled or not
     setTimeout(function () {
