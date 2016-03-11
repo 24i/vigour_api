@@ -24,13 +24,17 @@ var server = http.createServer((req, res) => {
     if (!body) { body = req.url }
     if (!parsed || !parsed.neverrespond) {
       res.end(body)
+    } else {
+      setTimeout(function () {
+        res.end(body)
+      }, 500)
     }
   })
 }).listen(3333)
 
 test.onFinish(function () {
-  server.close()
-  process.exit()
+  // server.close()
+  // process.exit()
 })
 
 api.set({ config: { url: url } })
@@ -164,25 +168,28 @@ test('poll', function (t) {
   api.simple.set('hello')
 })
 
-test('correct amount of fire-ing of listeners', function (t) {
+test('listeners fire the correctly', function (t) {
   var success = 0
   var error = 0
+  var obs = new Observable()
+
   api.set({ something: {} })
   api.something.on('success', function () { success++ })
   api.something.on('error', function () { error++ })
-  api.set(void 0)
-  var obs = new Observable()
+  api.something.set(void 0)
   api.something.set(obs)
   obs.set(false)
   api.something.set({ url: { $add: '/bla' }})
   fired()
   obs.set(100)
-  fired()
+  fired('setting reference', 0, 1)
+  t.end()
 
-  function fired (good, bad) {
+  function fired (msg, good, bad) {
     if (!good) { good = 0 }
     if (!bad) { bad = 0 }
-    t.equal(error, bad, 'error fired ' + bad + ' times')
-    t.equal(success, good, 'success fired ' + good + ' times')
+    msg = msg ? msg + ', ' : ''
+    t.equal(error, bad, msg + 'error fired: ' + bad)
+    t.equal(success, good, msg + 'success fired: ' + good)
   }
 })
