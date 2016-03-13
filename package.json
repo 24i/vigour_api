@@ -4,7 +4,7 @@
   "description": "Vigour generic API tool",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node test"
+    "test": "node test | tap-difflet"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "tape": "^4.5.1",
+    "tap-difflet": "0.4.0",
     "vigour-observable": "^1.0.15"
   }
 }
