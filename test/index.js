@@ -1,10 +1,9 @@
 'use strict'
 var test = require('tape')
-var http = require('http')
 var Observable = require('vigour-observable')
 var api = new Observable(require('../').api)
 var url = 'http://localhost:3333'
-var ApiError = require('../lib/error')
+// var ApiError = require('../lib/error')
 
 if (require('vigour-util/is/node')) {
   let server = require('./server')
@@ -24,7 +23,7 @@ function postRequest (t, target) {
   } else {
     api.simple.set(target)
   }
-  api.simple.once('error', function (err) {
+  api.simple.once('error', function () {
     this.once('success', function (data) {
       t.deepEqual(
         data,
@@ -49,6 +48,32 @@ test('post request using a multi-field payload over a reference', function (t) {
   postRequest(t, new Observable())
 })
 
+test('block payload "", false and undefined', function (t) {
+  var cnt = 0
+  api.set({
+    simple: {
+      isError (val) { cnt++ },
+      payloadField: 'payload'
+    }
+  })
+  var cases = [ '', void 0, false, new Observable() ]
+  t.plan(cases.length)
+  run(cases)
+  function run (arr) {
+    cnt = 0
+    api.simple.set({ payload: arr[0] })
+    setTimeout(function equals () {
+      t.equal(cnt, 0, 'payload "' + arr[0] + '" does not fire a request')
+      arr.shift()
+      if (arr.length) {
+        run(arr)
+      } else {
+        api.simple.remove()
+      }
+    }, 100)
+  }
+})
+
 test('payload field and mapPayload method', function (t) {
   t.plan(2)
   api.set({
@@ -61,7 +86,7 @@ test('payload field and mapPayload method', function (t) {
       data: 'something special'
     }
   })
-  api.simple.once('success', function(data) {
+  api.simple.once('success', function (data) {
     t.deepEqual(data, { success: true, special: true }, 'received correct payload')
     api.simple.remove()
   })
@@ -146,38 +171,38 @@ test('poll', function (t) {
 })
 
 function testResponses (api, t) {
-    var success = 0
-    var error = 0
-    var obs = new Observable()
-    api.on('success', function () { success++ })
-    api.on('error', function () { error++ })
-    api.set(void 0)
-    api.set(obs)
-    obs.set('')
-    obs.set({
-      properties: { something: true },
-      something: {}
-    })
-    api.set({ url: { $add: '/bla' }})
-    // using timeouts since we want to test if responses are handled or not
+  var success = 0
+  var error = 0
+  var obs = new Observable()
+  api.on('success', function () { success++ })
+  api.on('error', function () { error++ })
+  api.set(void 0)
+  api.set(obs)
+  obs.set('')
+  obs.set({
+    properties: { something: true },
+    something: {}
+  })
+  api.set({ url: { $add: '/bla' } })
+  // using timeouts since we want to test if responses are handled or not
+  setTimeout(function () {
+    fired()
+    obs.set(100)
     setTimeout(function () {
-      fired()
-      obs.set(100)
-      setTimeout(function () {
-        fired('setting reference', 0, 1)
-        api.remove()
-        t.end()
-      }, 100)
+      fired('setting reference', 0, 1)
+      api.remove()
+      t.end()
     }, 100)
+  }, 100)
 
-    function fired (msg, good, bad) {
-      if (!good) { good = 0 }
-      if (!bad) { bad = 0 }
-      msg = msg ? msg + ', ' : ''
-      t.equal(error, bad, msg + 'error fired: ' + bad)
-      t.equal(success, good, msg + 'success fired: ' + good)
-    }
+  function fired (msg, good, bad) {
+    if (!good) { good = 0 }
+    if (!bad) { bad = 0 }
+    msg = msg ? msg + ', ' : ''
+    t.equal(error, bad, msg + 'error fired: ' + bad)
+    t.equal(success, good, msg + 'success fired: ' + good)
   }
+}
 
 test('post request listeners fire correctly', function (t) {
   api.set({ something: {} })

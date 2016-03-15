@@ -1,6 +1,6 @@
 'use strict'
 var http = require('http')
-var server = module.exports = http.createServer((req, res) => {
+module.exports = http.createServer((req, res) => {
   var body = ''
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Content-Type', 'text/plain')
@@ -14,7 +14,7 @@ var server = module.exports = http.createServer((req, res) => {
     if (body) {
       try {
         parsed = JSON.parse(body)
-      } catch(e) {}
+      } catch (e) {}
     }
     if (!body) { body = req.url }
     if (!parsed || !parsed.neverrespond) {
