@@ -5,6 +5,9 @@
 
 Facilitating api calls, using [vigour-observable](https://github.com/vigour-io/observable).
 
+## how to use
+`npm i --save vigour-api`
+
 ##setup
 ```js
 // define an api
