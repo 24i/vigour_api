@@ -18,7 +18,7 @@ var obs = new Observable({
 })
 
 obs.api.set({
-  getSomeStuff: {
+  google: {
     url: 'http://google.com',
     method: 'GET',
     isError (val) {
@@ -29,9 +29,9 @@ obs.api.set({
 })
 
 //add listeners
-obs.api.getSomeStuff.on('data', fn)
-obs.api.getSomeStuff.on('success', fn)
-obs.api.getSomeStuff.on('error', fn)
+obs.api.google.on('data', fn)
+obs.api.google.on('success', fn)
+obs.api.google.on('error', fn)
 
 // use an api
 obs.api.set('something')
