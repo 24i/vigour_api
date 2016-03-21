@@ -3,32 +3,47 @@
 [![npm version](https://badge.fury.io/js/vigour-api.svg)](https://badge.fury.io/js/vigour-api)
 [![Build Status](https://travis-ci.org/vigour-io/api.svg?branch=master)](https://travis-ci.org/vigour-io/api)
 
-Facilitating api calls, using [vigour-observable](https://github.com/vigour-io/observable).
+Observable api calls [vigour-observable](https://github.com/vigour-io/observable).
 
-## how to use
+## install
 `npm i --save vigour-api`
 
-##setup
+## use
 ```js
 // define an api
 var Observable = require('vigour-observable')
-var api = require('vigour-api')
 
-api.getSomeStuff = {
-  type: 'api',
-  url: someurl,
-  method: 'GET',
-  isError (val) {
-    return !val || typeof val !== 'object'
-  },
-  poll: 30e3
-}
+var obs = new Observable({
+ inject: require('vigour-api')
+})
 
-var observableApi = new Observable(api)
+obs.api.set({
+  getSomeStuff: {
+    url: 'http://google.com',
+    method: 'GET',
+    isError (val) {
+      return !val || typeof val !== 'object'
+    },
+    poll: 30e3
+  }
+})
 
 //add listeners
-observableApi.getSomeStuff.on('data', fn)
-observableApi.getSomeStuff.on('error', fn)
-```
+obs.api.getSomeStuff.on('data', fn)
+obs.api.getSomeStuff.on('success', fn)
+obs.api.getSomeStuff.on('error', fn)
 
-*to be edited*
+// use an api
+obs.api.set('something')
+// results in a get call to http://google.com/something
+
+// api calls over a reference
+var ref = new Observable()
+obs.api.set(ref)
+
+ref.set(100)
+// results in a get call to http://google.com/100
+
+ref.set(300)
+// cancels current api call thats in progress and creates a get call to http://google.com/300
+```
