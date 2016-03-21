@@ -28,7 +28,7 @@ obs.api.set({
   }
 })
 
-//add listeners
+// add listeners
 obs.api.google.on('data', fn)
 obs.api.google.on('success', fn)
 obs.api.google.on('error', fn)
